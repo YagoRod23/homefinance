@@ -36,7 +36,7 @@ export const Analytics = () => {
 
       // Calcular analytics
       const analyticsData = calculateAnalytics(expenses, incomes);
-      const balances = calculateResidentBalances(expenses, residents);
+      const balances = calculateResidentBalances(expenses, residents, incomes);
 
       setAnalytics(analyticsData);
       setResidentBalances(balances);

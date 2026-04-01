@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Income, incomeService } from '../services/incomeService';
+import { residentService } from '../services/residentService';
+
+interface Resident {
+  id: number;
+  name: string;
+}
 
 interface IncomeFormProps {
   income?: Income;
@@ -13,9 +19,24 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ income, onSuccess, onCancel }) 
     value: '',
     date: new Date().toISOString().split('T')[0],
     category: 'salary',
+    resident_id: '',
   });
+  const [residents, setResidents] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadResidents();
+  }, []);
+
+  const loadResidents = async () => {
+    try {
+      const data = await residentService.listResidents(100);
+      setResidents(data);
+    } catch (err) {
+      console.error('Erro ao carregar moradores', err);
+    }
+  };
 
   useEffect(() => {
     if (income) {
@@ -24,6 +45,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ income, onSuccess, onCancel }) 
         value: income.value.toString(),
         date: income.date.split('T')[0],
         category: income.category,
+        resident_id: income.resident_id ? income.resident_id.toString() : '',
       });
     }
   }, [income]);
@@ -34,15 +56,19 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ income, onSuccess, onCancel }) 
     setError(null);
 
     try {
+      const submitData = {
+        ...formData,
+        value: parseFloat(formData.value),
+        resident_id: formData.resident_id ? parseInt(formData.resident_id) : undefined,
+      };
+
       if (income) {
         await incomeService.updateIncome(income.id, {
-          ...formData,
-          value: parseFloat(formData.value),
+          ...submitData,
         });
       } else {
         await incomeService.createIncome({
-          ...formData,
-          value: parseFloat(formData.value),
+          ...submitData,
         });
       }
       onSuccess?.();
@@ -51,6 +77,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ income, onSuccess, onCancel }) 
         value: '',
         date: new Date().toISOString().split('T')[0],
         category: 'salary',
+        resident_id: '',
       });
     } catch (err: any) {
       setError(err.response?.data?.error || 'Falha ao salvar receita');
@@ -133,6 +160,29 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ income, onSuccess, onCancel }) 
             <option value="investment">Investimento</option>
             <option value="other">Outro</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Vincular a Morador (Opcional)
+          </label>
+          <select
+            value={formData.resident_id}
+            onChange={(e) =>
+              setFormData({ ...formData, resident_id: e.target.value })
+            }
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="">Não vincular (receita geral)</option>
+            {residents.map((resident) => (
+              <option key={resident.id} value={resident.id}>
+                {resident.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-sm text-gray-500 mt-1">
+            Deixe em branco para distribuir entre todos os moradores
+          </p>
         </div>
       </div>
 

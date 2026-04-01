@@ -6,6 +6,8 @@ export interface Income {
   value: number;
   date: string;
   category: string;
+  resident_id?: number;
+  resident_name?: string;
 }
 
 export const incomeService = {
@@ -24,6 +26,7 @@ export const incomeService = {
     value: number | string;
     date: string;
     category: string;
+    resident_id?: number;
   }): Promise<Income> {
     const response = await api.post('/incomes', data);
     return response.data;

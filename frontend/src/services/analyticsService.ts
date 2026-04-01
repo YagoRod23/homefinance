@@ -136,7 +136,8 @@ export const calculateAnalytics = (
  */
 export const calculateResidentBalances = (
   expenses: Expense[],
-  residents: { id: number; name: string }[]
+  residents: { id: number; name: string }[],
+  incomes?: Income[]
 ): ResidentBalance[] => {
   const balances = residents.map((r) => ({
     residentId: r.id,
@@ -146,9 +147,9 @@ export const calculateResidentBalances = (
     balance: 0,
   }));
 
+  // Adiciona despesas (o que cada um deve)
   expenses.forEach((exp) => {
     if (exp.shares && exp.shares.length > 0) {
-      // Adiciona o que cada um deve
       exp.shares.forEach((share) => {
         const resident = balances.find((b) => b.residentId === share.resident_id);
         if (resident) {
@@ -157,6 +158,24 @@ export const calculateResidentBalances = (
       });
     }
   });
+
+  // Adiciona receitas (o que está pago/disponível por residente)
+  if (incomes) {
+    incomes.forEach((inc) => {
+      if (inc.resident_id) {
+        const resident = balances.find((b) => b.residentId === inc.resident_id);
+        if (resident) {
+          resident.totalPaid += inc.value;
+        }
+      } else {
+        // Se receita não tem residente específico, distribui entre todos
+        const sharePerResident = inc.value / residents.length;
+        balances.forEach((b) => {
+          b.totalPaid += sharePerResident;
+        });
+      }
+    });
+  }
 
   // Calcular balance (negativo = deve, positivo = é devido)
   balances.forEach((b) => {
