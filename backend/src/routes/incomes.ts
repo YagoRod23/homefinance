@@ -7,7 +7,7 @@ const router = Router();
 // POST /api/incomes - Create new income
 router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
-    const { description, value, date, category } = req.body;
+    const { description, value, date, category, resident_id } = req.body;
     const userId = req.user?.id;
 
     if (!userId) {
@@ -20,6 +20,7 @@ router.post('/', authenticateToken, async (req: AuthRequest, res: Response) => {
       value,
       date,
       category,
+      resident_id,
     });
 
     return res.status(201).json(income);
@@ -73,7 +74,7 @@ router.put('/:id', authenticateToken, async (req: AuthRequest, res: Response) =>
   try {
     const incomeId = parseInt(req.params.id);
     const userId = req.user?.id;
-    const { description, value, date, category } = req.body;
+    const { description, value, date, category, resident_id } = req.body;
 
     if (!userId) {
       return res.status(401).json({ error: 'Not authenticated' });
@@ -84,6 +85,7 @@ router.put('/:id', authenticateToken, async (req: AuthRequest, res: Response) =>
       value,
       date,
       category,
+      resident_id,
     });
 
     return res.status(200).json(income);

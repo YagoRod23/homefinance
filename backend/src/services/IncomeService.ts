@@ -8,6 +8,7 @@ export interface CreateIncomeInput {
   value: string | number;
   date: Date | string;
   category: string;
+  resident_id?: number | null;
 }
 
 export interface UpdateIncomeInput {
@@ -15,6 +16,7 @@ export interface UpdateIncomeInput {
   value?: string | number;
   date?: Date | string;
   category?: string;
+  resident_id?: number | null;
 }
 
 export class IncomeService {
@@ -39,6 +41,7 @@ export class IncomeService {
         value: String(value),
         date: new Date(input.date),
         category: input.category,
+        resident_id: input.resident_id || null,
       }).returning();
 
       return {
@@ -111,6 +114,7 @@ export class IncomeService {
       if (input.value !== undefined) updateData.value = String(input.value);
       if (input.date !== undefined) updateData.date = new Date(input.date);
       if (input.category !== undefined) updateData.category = input.category;
+      if (input.resident_id !== undefined) updateData.resident_id = input.resident_id;
 
       const result = await db
         .update(incomes)
