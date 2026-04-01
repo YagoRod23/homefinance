@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Expense, expenseService } from '../services/expenseService';
 import { Resident, residentService } from '../services/residentService';
+import { expenseCategoryOptions } from '../services/analyticsService';
 
 interface ExpenseFormProps {
   expense?: Expense;
@@ -161,13 +162,11 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSuccess, onCancel 
             }
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="food">Alimentação</option>
-            <option value="housing">Moradia</option>
-            <option value="transport">Transporte</option>
-            <option value="healthcare">Saúde</option>
-            <option value="entertainment">Entretenimento</option>
-            <option value="utilities">Utilidades</option>
-            <option value="other">Outro</option>
+            {expenseCategoryOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
           </select>
         </div>
 

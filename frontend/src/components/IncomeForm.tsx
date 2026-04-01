@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Income, incomeService } from '../services/incomeService';
 import { residentService } from '../services/residentService';
+import { incomeCategoryOptions } from '../services/analyticsService';
 
 interface Resident {
   id: number;
@@ -154,11 +155,11 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ income, onSuccess, onCancel }) 
             }
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            <option value="salary">Salário</option>
-            <option value="freelance">Freelance</option>
-            <option value="bonus">Bônus</option>
-            <option value="investment">Investimento</option>
-            <option value="other">Outro</option>
+            {incomeCategoryOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
           </select>
         </div>
 

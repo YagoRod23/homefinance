@@ -190,6 +190,7 @@ export const calculateResidentBalances = (
  */
 const formatCategoryName = (category: string): string => {
   const names: Record<string, string> = {
+    // Despesas
     housing: '🏠 Moradia',
     food: '🍔 Alimentação',
     transport: '🚗 Transporte',
@@ -197,13 +198,37 @@ const formatCategoryName = (category: string): string => {
     entertainment: '🎬 Diversão',
     health: '🏥 Saúde',
     shopping: '🛍️ Compras',
+    // Receitas
     salary: '💰 Salário',
     freelance: '💼 Freelance',
     bonus: '🎁 Bônus',
+    investment: '📈 Investimento',
     other: '📦 Outros',
   };
   return names[category] || category;
 };
+
+/**
+ * Mapeia categorias em inglês → português para dropdown
+ */
+export const expenseCategoryOptions = [
+  { value: 'housing', label: '🏠 Moradia' },
+  { value: 'food', label: '🍔 Alimentação' },
+  { value: 'transport', label: '🚗 Transporte' },
+  { value: 'utilities', label: '💡 Contas' },
+  { value: 'entertainment', label: '🎬 Diversão' },
+  { value: 'health', label: '🏥 Saúde' },
+  { value: 'shopping', label: '🛍️ Compras' },
+  { value: 'other', label: '📦 Outros' },
+];
+
+export const incomeCategoryOptions = [
+  { value: 'salary', label: '💰 Salário' },
+  { value: 'freelance', label: '💼 Freelance' },
+  { value: 'bonus', label: '🎁 Bônus' },
+  { value: 'investment', label: '📈 Investimento' },
+  { value: 'other', label: '📦 Outros' },
+];
 
 /**
  * Formata nome do mês
