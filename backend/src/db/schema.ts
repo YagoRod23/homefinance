@@ -29,6 +29,7 @@ export const incomes = pgTable('incomes', {
   value: decimal('value', { precision: 10, scale: 2 }).notNull(),
   date: timestamp('date').notNull(),
   category: varchar('category', { length: 100 }).notNull(),
+  resident_id: integer('resident_id'), // Optional: null = distribute to all, set = specific resident
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -85,6 +86,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   incomes: many(incomes),
   expenses: many(expenses),
   debts: many(debts),
+}));
+
+export const incomesRelations = relations(incomes, ({ one }) => ({
+  user: one(users, { fields: [incomes.user_id], references: [users.id] }),
 }));
 
 export const residentsRelations = relations(residents, ({ one, many }) => ({
