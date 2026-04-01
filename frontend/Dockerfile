@@ -4,13 +4,14 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY tsconfig*.json ./
 COPY vite.config.ts ./
 COPY index.html ./
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
 COPY src ./src
-COPY public ./public
 
 RUN npm run build
 
